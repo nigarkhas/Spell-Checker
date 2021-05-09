@@ -10,7 +10,6 @@ namespace SpellChecker
         public static void CorrectSpelling(string input)
         {
             var splitter = "===";
-            IEnumerable<char> inputSymbols, dictSymbols;
             var diffCount = 0;
             bool IsSingle = true, IsMultiple = true;
             var cooccurences = new List<string>();
@@ -21,35 +20,27 @@ namespace SpellChecker
 
             foreach (var word in text)
             {
-                inputSymbols = word.ToLower().ToCharArray();
+                IsSingle = !(dictionary.Where(x => EditDistance(word, x, word.Length, x.Length) == 0)).Any();
+                IsMultiple = !(dictionary.Where(x => EditDistance(word, x, word.Length, x.Length) == 1)).Any();
 
                 foreach (var phrase in dictionary)
                 {
-                    dictSymbols = phrase.ToLower().ToCharArray();
-                    
-                    diffCount = inputSymbols.MyExcept(dictSymbols).Count() + dictSymbols.MyExcept(inputSymbols).Count();
+                    diffCount = EditDistance(word, phrase, word.Length, phrase.Length);
 
                     switch (diffCount)
                     {
                         case 0:
-                            cooccurences.Add(word);
+                            cooccurences.Add(phrase);
+                            IsSingle = false; IsMultiple = false;
                             break;
                         case 1:
                             if (IsSingle)
-                            {
                                 cooccurences.Add(phrase);
-                                IsMultiple = false;
-                            }
                             break;
                         case 2:
-                            if (IsMultiple)
-                            {
-                                if (Rearrange(word, phrase))
-                                    cooccurences.Add(phrase); 
-
-                                IsSingle = false;
-                            }
-                            break;  
+                            if (IsMultiple && Rearrange(word, phrase))
+                                cooccurences.Add(phrase);
+                            break;
                         default:
                             break;
                     }
@@ -75,9 +66,9 @@ namespace SpellChecker
             var diffAdd = dict.ToLower().MyExcept(input.ToLower());
             var diffRemove = input.ToLower().MyExcept(dict.ToLower());
 
-            if (diffAdd.Count() == 2 || diffRemove.Count() == 2)
+            if ((diffAdd.Count() == 2 || diffRemove.Count() == 2))
             {
-                if (diffRemove.Any() && (input.Contains(string.Join("", diffRemove))) 
+                if (diffRemove.Any() && (input.Contains(string.Join("", diffRemove)))
                    || (diffAdd.Any() && dict.Contains(string.Join("", diffAdd))))
                     return false;
                 else
@@ -85,6 +76,22 @@ namespace SpellChecker
             }
             else
                 return true;
+
         }
+
+        public static int EditDistance(String input, String dict, int lenIn, int lenDi)
+        {
+            if (lenIn == 0)
+                return lenDi;
+
+            if (lenDi == 0)
+                return lenIn;
+
+            if (input[lenIn - 1] == dict[lenDi - 1])
+                return EditDistance(input, dict, lenIn - 1, lenDi - 1);
+
+            return 1 + Math.Min(EditDistance(input, dict, lenIn, lenDi - 1), EditDistance(input, dict, lenIn - 1, lenDi));
+        }
+
     }
 }
