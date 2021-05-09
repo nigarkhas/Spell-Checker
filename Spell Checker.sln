@@ -1,0 +1,25 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 12.00
+# Visual Studio Version 16
+VisualStudioVersion = 16.0.30204.135
+MinimumVisualStudioVersion = 10.0.40219.1
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Spell Checker", "Spell Checker\Spell Checker.csproj", "{3507EB2A-C7A9-4F75-B45F-716170F18C72}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Any CPU = Debug|Any CPU
+		Release|Any CPU = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{3507EB2A-C7A9-4F75-B45F-716170F18C72}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{3507EB2A-C7A9-4F75-B45F-716170F18C72}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{3507EB2A-C7A9-4F75-B45F-716170F18C72}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{3507EB2A-C7A9-4F75-B45F-716170F18C72}.Release|Any CPU.Build.0 = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(ExtensibilityGlobals) = postSolution
+		SolutionGuid = {449D5F2E-50B0-45C4-BE58-B8AD3641FD3C}
+	EndGlobalSection
+EndGlobal
