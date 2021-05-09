@@ -23,12 +23,12 @@ namespace SpellChecker
 
                 foreach (var word in text)
                 {
-                    IsSingle = !(dictionary.Where(x => EditDistance(word, x, word.Length, x.Length) == 0)).Any();
-                    IsMultiple = !(dictionary.Where(x => EditDistance(word, x, word.Length, x.Length) == 1)).Any();
+                    IsSingle = !(dictionary.Where(x => EditDistance(word.ToLower(), x.ToLower(), word.Length, x.Length) == 0)).Any();
+                    IsMultiple = !(dictionary.Where(x => EditDistance(word.ToLower(), x.ToLower(), word.Length, x.Length) == 1)).Any();
 
                     foreach (var phrase in dictionary)
                     {
-                        diffCount = EditDistance(word, phrase, word.Length, phrase.Length);
+                        diffCount = EditDistance(word.ToLower(), phrase.ToLower(), word.Length, phrase.Length);
 
                         switch (diffCount)
                         {
