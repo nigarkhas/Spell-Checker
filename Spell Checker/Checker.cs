@@ -15,50 +15,58 @@ namespace SpellChecker
             var cooccurences = new List<string>();
             var result = new List<string>();
 
-            var dictionary = input.Split(splitter)[0].Trim().Split(new char[0], StringSplitOptions.RemoveEmptyEntries);
-            var text = input.Split(splitter)[1].Trim().Split(new char[0], StringSplitOptions.RemoveEmptyEntries);
-
-            foreach (var word in text)
+            try
             {
-                IsSingle = !(dictionary.Where(x => EditDistance(word, x, word.Length, x.Length) == 0)).Any();
-                IsMultiple = !(dictionary.Where(x => EditDistance(word, x, word.Length, x.Length) == 1)).Any();
+                var dictionary = input.Split(splitter)[0].Trim().Split(new char[0], StringSplitOptions.RemoveEmptyEntries);
+                var text = input.Split(splitter)[1].Trim().Split(new char[0], StringSplitOptions.RemoveEmptyEntries);
 
-                foreach (var phrase in dictionary)
+
+                foreach (var word in text)
                 {
-                    diffCount = EditDistance(word, phrase, word.Length, phrase.Length);
+                    IsSingle = !(dictionary.Where(x => EditDistance(word, x, word.Length, x.Length) == 0)).Any();
+                    IsMultiple = !(dictionary.Where(x => EditDistance(word, x, word.Length, x.Length) == 1)).Any();
 
-                    switch (diffCount)
+                    foreach (var phrase in dictionary)
                     {
-                        case 0:
-                            cooccurences.Add(phrase);
-                            IsSingle = false; IsMultiple = false;
-                            break;
-                        case 1:
-                            if (IsSingle)
+                        diffCount = EditDistance(word, phrase, word.Length, phrase.Length);
+
+                        switch (diffCount)
+                        {
+                            case 0:
                                 cooccurences.Add(phrase);
-                            break;
-                        case 2:
-                            if (IsMultiple && Rearrange(word, phrase))
-                                cooccurences.Add(phrase);
-                            break;
-                        default:
-                            break;
+                                IsSingle = false; IsMultiple = false;
+                                break;
+                            case 1:
+                                if (IsSingle)
+                                    cooccurences.Add(phrase);
+                                break;
+                            case 2:
+                                if (IsMultiple && Rearrange(word, phrase))
+                                    cooccurences.Add(phrase);
+                                break;
+                            default:
+                                break;
+                        }
                     }
+
+                    if (!cooccurences.Any())
+                        result.Add("{" + word + "?" + "}");
+
+                    else if (cooccurences.Count() == 1)
+                        result.Add(cooccurences.SingleOrDefault());
+
+                    else
+                        result.Add("{" + string.Join(" ", cooccurences) + "}");
+
+                    cooccurences.Clear();
                 }
 
-                if (!cooccurences.Any())
-                    result.Add("{" + word + "?" + "}");
-
-                else if (cooccurences.Count() == 1)
-                    result.Add(cooccurences.SingleOrDefault());
-
-                else
-                    result.Add("{" + string.Join(" ", cooccurences) + "}");
-
-                cooccurences.Clear();
+                Console.WriteLine(string.Join(" ", result));
             }
-
-            Console.WriteLine(string.Join(" ", result));
+            catch 
+            {
+                Console.WriteLine("Input is incorrect");
+            }
         }
 
         public static bool Rearrange(string input, string dict)
@@ -79,7 +87,7 @@ namespace SpellChecker
 
         }
 
-        public static int EditDistance(String input, String dict, int lenIn, int lenDi)
+        public static int EditDistance(string input, string dict, int lenIn, int lenDi)
         {
             if (lenIn == 0)
                 return lenDi;
